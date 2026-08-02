@@ -22,7 +22,8 @@ export default {
           recordAudioAndroid: true
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "react-native-edge-to-edge"
     ],
     experiments: {
       typedRoutes: true,
