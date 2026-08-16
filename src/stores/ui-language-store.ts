@@ -7,7 +7,7 @@ import { UILanguage, PVoid } from './types';
 
 export class UILanguageStore {
   isSystemLanguage = false;
-  language: Language = "ar";
+  language: Language = "en";
   isLanguageChanging = false;
 
   setLanguage = async (v: Language | UILanguage): Promise<void> => {

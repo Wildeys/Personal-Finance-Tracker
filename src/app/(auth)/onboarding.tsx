@@ -10,7 +10,7 @@ import {
   View,
 } from '@/components/ui';
 
-import { useAuth } from '@/app/providers/auth/auth-provider';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function Onboarding() {
   const { setIsFirstTime } = useAuth();

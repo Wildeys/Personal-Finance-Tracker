@@ -29,5 +29,37 @@
     "version": "إصدار",
     "website": "موقع الكتروني"
   },
-  "welcome": "test arabic"
+  "welcome": "test arabic",
+  "finance": {
+    "home": "الرئيسية",
+    "settings": "الإعدادات",
+    "greeting_morning": "صباح الخير! 👋",
+    "greeting_afternoon": "طاب يومك! 👋",
+    "greeting_evening": "مساء الخير! 👋",
+    "current_balance": "الرصيد الحالي",
+    "income": "دخل",
+    "expense": "مصروف",
+    "recent_transactions": "المعاملات الأخيرة",
+    "view_all": "عرض الكل",
+    "empty": "لا توجد معاملات بعد",
+    "add_transaction": "إضافة معاملة",
+    "amount": "المبلغ",
+    "enter_amount": "أدخل المبلغ",
+    "type": "النوع",
+    "category": "الفئة",
+    "select_category": "اختر الفئة",
+    "note": "ملاحظة (اختياري)",
+    "add_note": "أضف ملاحظة (اختياري)",
+    "save": "حفظ المعاملة",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "delete_confirm": "حذف هذه المعاملة؟",
+    "categories": "الفئات",
+    "new_category": "اسم فئة جديدة",
+    "add": "إضافة",
+    "actions": "إجراءات",
+    "clear_all": "مسح كل المعاملات",
+    "clear_confirm": "سيتم حذف كل المعاملات. هل تريد المتابعة؟",
+    "required": "مطلوب"
+  }
 }

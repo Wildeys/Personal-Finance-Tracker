@@ -2,10 +2,10 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: "expo-go-villa-sample",
-    slug: "expo-go-villa-sample",
+    name: "Personal-Finance-Tracker",
+    slug: "Personal-Finance-Tracker",
     version: "1.0.0",
-    scheme: "expo-go-villa-sample",
+    scheme: "Personal-Finance-Tracker",
     platforms: ["ios", "android"],
     web: {
       bundler: "metro",

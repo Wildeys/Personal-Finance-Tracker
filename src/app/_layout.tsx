@@ -3,7 +3,7 @@ import '../../global.css';
 import { Stack, SplashScreen } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { hydrateStores } from '@/stores';
-import { Providers } from './providers';
+import { Providers } from '@/providers';
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -48,8 +48,7 @@ export default function RootLayout() {
     <Providers>
       <Stack>
         <Stack.Screen name="(app)" options={{ headerShown: false }} />
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ headerShown: false }} />
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       </Stack>
     </Providers>
   );

@@ -1,14 +1,10 @@
 /* eslint-disable max-lines-per-function */
-import {
-  BottomSheetFlatList,
-  type BottomSheetModal,
-} from '@gorhom/bottom-sheet';
-import { FlashList } from '@shopify/flash-list';
+import { type BottomSheetModal } from '@gorhom/bottom-sheet';
 import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { useController } from 'react-hook-form';
-import { Platform, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { Pressable, type PressableProps } from 'react-native';
 import type { SvgProps } from 'react-native-svg';
 import Svg, { Path } from 'react-native-svg';
@@ -56,8 +52,6 @@ const selectTv = tv({
   },
 });
 
-const List = Platform.OS === 'web' ? FlashList : BottomSheetFlatList;
-
 export type OptionType = { label: string; value: string | number };
 
 type OptionsProps = {
@@ -67,29 +61,12 @@ type OptionsProps = {
   testID?: string;
 };
 
-function keyExtractor(item: OptionType) {
-  return `select-item-${item.value}`;
-}
-
 export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
   ({ options, onSelect, value, testID }, ref) => {
     const height = options.length * 70 + 100;
     const snapPoints = React.useMemo(() => [height], [height]);
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
-
-    const renderSelectItem = React.useCallback(
-      ({ item }: { item: OptionType }) => (
-        <Option
-          key={`select-item-${item.value}`}
-          label={item.label}
-          selected={value === item.value}
-          onPress={() => onSelect(item)}
-          testID={testID ? `${testID}-item-${item.value}` : undefined}
-        />
-      ),
-      [onSelect, value, testID]
-    );
 
     return (
       <Modal
@@ -100,13 +77,17 @@ export const Options = React.forwardRef<BottomSheetModal, OptionsProps>(
           backgroundColor: isDark ? colors.neutral[800] : colors.white,
         }}
       >
-        <List
-          data={options}
-          keyExtractor={keyExtractor}
-          renderItem={renderSelectItem}
-          testID={testID ? `${testID}-modal` : undefined}
-          estimatedItemSize={52}
-        />
+        <ScrollView testID={testID ? `${testID}-modal` : undefined}>
+          {options.map((item) => (
+            <Option
+              key={`select-item-${item.value}`}
+              label={item.label}
+              selected={value === item.value}
+              onPress={() => onSelect(item)}
+              testID={testID ? `${testID}-item-${item.value}` : undefined}
+            />
+          ))}
+        </ScrollView>
       </Modal>
     );
   }

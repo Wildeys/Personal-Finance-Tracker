@@ -1,4 +1,3 @@
-import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { I18nManager } from 'react-native';
@@ -8,10 +7,11 @@ import { resources } from './resources';
 
 export type { TxKeyPath } from './types';
 
-// Initialize i18next
+// Initialize i18next without reading stores here — stores/index imports this
+// file via UILanguageStore, so `stores` is still undefined at module load.
 i18n.use(initReactI18next).init({
   resources,
-  lng: stores.uiLanguage.language || Localization.getLocales()[0]?.languageCode || 'en',
+  lng: 'en',
   fallbackLng: 'en',
   compatibilityJSON: 'v4',
   interpolation: {
@@ -20,14 +20,17 @@ i18n.use(initReactI18next).init({
 });
 
 // Setup RTL
-const isRTL = i18n.language === 'ar';
+const isRTL = false;
 I18nManager.allowRTL(isRTL);
 I18nManager.forceRTL(isRTL);
 
 // Translation function - accesses store to make it reactive
 export const translate = (key: string, options?: any): string => {
   // Access the language to trigger re-renders in observer components
-  const lang = stores.uiLanguage.language;
+  const lang = stores?.uiLanguage?.language;
+  if (lang && i18n.language !== lang) {
+    i18n.changeLanguage(lang);
+  }
   return i18n.t(key, options) as string;
 };
 

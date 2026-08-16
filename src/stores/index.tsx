@@ -3,18 +3,21 @@ import React from 'react';
 import './_hydration';
 
 import { AuthStore, TokenType, AuthStatus } from './auth-store';
+import { FinanceStore } from './finance-store';
 import { UILanguageStore } from './ui-language-store';
 import { UIThemeStore } from './ui-theme-store';
 import { IStore, PVoid } from './types';
 
 // Re-export types
 export type { TokenType, AuthStatus };
+export type { Transaction, TransactionType } from './finance-store';
 
 // Centralized stores object
 class Stores {
   auth = new AuthStore()
   uiLanguage = new UILanguageStore()
   uiTheme = new UIThemeStore()
+  finance = new FinanceStore()
 };
 
 export const stores = new Stores();

@@ -1,17 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Link, Redirect, Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 
-import { Pressable, Text } from '@/components/ui';
+import { useAuth } from '@/providers/auth-provider';
 import {
-  Feed as FeedIcon,
+  Home as HomeIcon,
+  PlusCircle,
   Settings as SettingsIcon,
-  Style as StyleIcon,
-  Home as ProfileIcon,
 } from '@/components/ui/icons';
-import { useAuth } from '@/app/providers/auth/auth-provider';
+import { translate } from '@/lib';
+import { FINANCE_GREEN } from '@/utils';
 
-export default function TabLayout() {
+export default observer(function TabLayout() {
   const { status, isFirstTime } = useAuth();
 
   if (isFirstTime) {
@@ -21,55 +22,44 @@ export default function TabLayout() {
   if (status === 'signOut') {
     return <Redirect href="/(auth)/login" />;
   }
-  
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: FINANCE_GREEN,
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        tabBarStyle: {
+          borderTopColor: '#E5E7EB',
+          backgroundColor: '#FFFFFF',
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Feed',
-          tabBarIcon: ({ color }) => <FeedIcon color={color} />,
-          headerRight: () => <CreateNewPostLink />,
-          tabBarButtonTestID: 'feed-tab',
+          title: translate('finance.home'),
+          tabBarIcon: ({ color }) => <HomeIcon color={color} />,
+          tabBarButtonTestID: 'home-tab',
         }}
       />
       <Tabs.Screen
-        name="style"
+        name="add-transaction"
         options={{
-          title: 'Style',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <StyleIcon color={color} />,
-          tabBarButtonTestID: 'style-tab',
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          headerShown: false,
-          tabBarIcon: ({ color }) => <ProfileIcon color={color} />,
-          tabBarButtonTestID: 'profile-tab',
+          title: translate('finance.add_transaction'),
+          tabBarIcon: ({ color }) => <PlusCircle color={color} />,
+          tabBarButtonTestID: 'add-tab',
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
-          headerShown: false,
+          title: translate('finance.settings'),
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',
         }}
       />
     </Tabs>
   );
-}
-
-const CreateNewPostLink = () => {
-  return (
-    <Link href={"/feed/add-post" as any} asChild>
-      <Pressable>
-        <Text className="px-3 text-primary-300">Create</Text>
-      </Pressable>
-    </Link>
-  );
-};
+});

@@ -6,7 +6,7 @@ import FlashMessage from 'react-native-flash-message';
 import { observer } from 'mobx-react-lite';
 import { APIProvider } from '@/api/common/api-provider';
 import { StoresProvider, useStores } from '@/stores';
-import { AuthProvider } from "./auth/auth-provider";
+import { AuthProvider } from './auth-provider';
 
 const ThemedApp = observer(({ children }: { children: React.ReactNode }) => {
   const { uiTheme } = useStores();

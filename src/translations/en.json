@@ -29,5 +29,37 @@
     "version": "Version",
     "website": "Website"
   },
-  "welcome": "Welcome to obytes app site"
+  "welcome": "Welcome to obytes app site",
+  "finance": {
+    "home": "Home",
+    "settings": "Settings",
+    "greeting_morning": "Good morning! 👋",
+    "greeting_afternoon": "Good afternoon! 👋",
+    "greeting_evening": "Good evening! 👋",
+    "current_balance": "Current Balance",
+    "income": "Income",
+    "expense": "Expense",
+    "recent_transactions": "Recent Transactions",
+    "view_all": "View all",
+    "empty": "No transactions yet",
+    "add_transaction": "Add Transaction",
+    "amount": "Amount",
+    "enter_amount": "Enter amount",
+    "type": "Type",
+    "category": "Category",
+    "select_category": "Select category",
+    "note": "Note (optional)",
+    "add_note": "Add a note (optional)",
+    "save": "Save Transaction",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "delete_confirm": "Delete this transaction?",
+    "categories": "Categories",
+    "new_category": "New category name",
+    "add": "Add",
+    "actions": "Actions",
+    "clear_all": "Clear all transactions",
+    "clear_confirm": "This will remove all transactions. Continue?",
+    "required": "required"
+  }
 }
