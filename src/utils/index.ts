@@ -9,6 +9,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   Health: '#E53935',
   Entertainment: '#FB8C00',
   Salary: '#43A047',
+  Work: '#1565C0',
   Other: '#607D8B',
 };
 
@@ -23,10 +24,15 @@ const FALLBACK_COLORS = [
   '#5E35B1',
 ];
 
-export function formatCurrency(amount: number): string {
+export function formatCurrency(
+  amount: number,
+  currency: 'USD' | 'MVR' = 'MVR'
+): string {
+  const sign = amount < 0 ? '-' : '';
   const abs = Math.abs(amount).toFixed(2);
   const withCommas = abs.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `$${withCommas}`;
+  if (currency === 'MVR') return `${sign}Rf ${withCommas}`;
+  return `${sign}$${withCommas}`;
 }
 
 export function formatTransactionDate(iso: string): string {
@@ -43,6 +49,20 @@ export function getGreetingKey(): 'morning' | 'afternoon' | 'evening' {
   if (hour < 12) return 'morning';
   if (hour < 17) return 'afternoon';
   return 'evening';
+}
+
+export function getInitials(name?: string, email?: string): string {
+  const trimmed = name?.trim();
+  if (trimmed) {
+    const parts = trimmed.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    }
+    return trimmed.slice(0, 2).toUpperCase();
+  }
+  const mail = email?.trim();
+  if (mail) return mail.slice(0, 2).toUpperCase();
+  return '?';
 }
 
 export function getCategoryColor(name: string): string {

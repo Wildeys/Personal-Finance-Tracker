@@ -1,34 +1,43 @@
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
+import { useColorScheme } from 'nativewind';
 import React from 'react';
 import type { Control } from 'react-hook-form';
-import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, TextInput } from 'react-native';
+import { Controller, useForm, useWatch } from 'react-hook-form';
+import { Platform } from 'react-native';
 import * as z from 'zod';
 
 import {
   Button,
-  ControlledInput,
-  ControlledSelect,
+  KeyboardAvoidingView,
+  Pressable,
+  ScrollView,
   Text,
+  TextInput,
   View,
   colors,
 } from '@/components/ui';
-import { ArrowDown, ArrowUp } from '@/components/ui/icons';
+import { ArrowDown, ArrowUp, CategoryGlyph, hasCategoryIcon } from '@/components/ui/icons';
 import { translate } from '@/lib';
 import { useStores } from '@/stores';
-import { FINANCE_GREEN } from '@/utils';
+import { FINANCE_GREEN, FINANCE_RED, getCategoryColor } from '@/utils';
+
+const NOTE_MAX = 120;
 
 const schema = z.object({
   amount: z
     .string()
-    .min(1, 'Amount is required')
+    .min(1, translate('finance.validation.amount_required'))
     .refine((v) => !Number.isNaN(Number(v)) && Number(v) > 0, {
-      message: 'Enter a valid amount greater than 0',
+      message: translate('finance.validation.amount_invalid'),
     }),
   type: z.enum(['income', 'expense']),
-  category: z.string().min(1, 'Category is required'),
-  note: z.string().optional(),
+  category: z.string().min(1, translate('finance.validation.category_required')),
+  note: z
+    .string()
+    .max(NOTE_MAX, translate('finance.validation.note_too_long'))
+    .optional(),
 });
 
 export type TransactionFormType = z.infer<typeof schema>;
@@ -40,6 +49,9 @@ type Props = {
 
 export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
   const { finance } = useStores();
+  const { colorScheme } = useColorScheme();
+  const tabBarHeight = useBottomTabBarHeight();
+  const [amountFocused, setAmountFocused] = React.useState(false);
   const { handleSubmit, control } = useForm<TransactionFormType>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -50,37 +62,55 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
     },
   });
 
-  const options = finance.categories.map((c) => ({ label: c, value: c }));
+  const noteValue = useWatch({ control, name: 'note' }) ?? '';
+  const currencyPrefix = finance.currency === 'MVR' ? 'Rf' : '$';
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={10}
+      className="flex-1 bg-white dark:bg-neutral-900"
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={tabBarHeight}
     >
       <ScrollView
+        className="flex-1 bg-white dark:bg-neutral-900"
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 24 }}
+        automaticallyAdjustKeyboardInsets
+        contentContainerStyle={{ paddingBottom: 48 }}
       >
         <Text className="mb-1 text-base font-semibold">
-          {translate('finance.amount')}{' '}
-          <Text className="text-danger-500">*</Text>
+          {translate('finance.amount')}
         </Text>
         <Controller
           control={control}
           name="amount"
           render={({ field: { onChange, onBlur, value }, fieldState }) => (
             <View className="mb-4">
-              <View className="flex-row items-center rounded-xl border border-neutral-300 bg-white px-3">
-                <Text className="pr-2 text-lg font-semibold text-neutral-500">$</Text>
+              <View
+                className={`flex-row items-center rounded-2xl border bg-white dark:bg-neutral-800 ${
+                  amountFocused
+                    ? 'border-finance-green'
+                    : 'border-neutral-300 dark:border-neutral-700'
+                }`}
+              >
+                <Text className="pl-4 pr-1 text-2xl font-bold text-finance-green">
+                  {currencyPrefix}
+                </Text>
                 <TextInput
                   value={value}
                   onChangeText={onChange}
-                  onBlur={onBlur}
+                  onBlur={() => {
+                    setAmountFocused(false);
+                    onBlur();
+                  }}
+                  onFocus={() => setAmountFocused(true)}
                   placeholder={translate('finance.enter_amount')}
-                  placeholderTextColor={colors.neutral[400]}
+                  placeholderTextColor={
+                    colorScheme === 'dark'
+                      ? colors.neutral[500]
+                      : colors.neutral[400]
+                  }
                   keyboardType="decimal-pad"
-                  className="flex-1 py-3 text-base"
+                  className="flex-1 py-4 pr-4 text-3xl font-bold text-black dark:text-white"
                 />
               </View>
               {fieldState.error?.message ? (
@@ -92,48 +122,143 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
           )}
         />
 
-        <Text className="mb-1 text-base font-semibold">
-          {translate('finance.type')} <Text className="text-danger-500">*</Text>
+        <Text className="mb-2 text-base font-semibold">
+          {translate('finance.type')}
         </Text>
         <TypeToggle control={control} />
 
-        <ControlledSelect
-          control={control}
-          name="category"
-          label={`${translate('finance.category')} *`}
-          placeholder={translate('finance.select_category')}
-          options={options}
-        />
+        <Text className="mb-2 text-base font-semibold">
+          {translate('finance.category')}
+        </Text>
+        <CategoryGrid control={control} categories={finance.categories} />
 
-        <ControlledInput
+        <Text className="mb-1 text-base font-semibold">
+          {translate('finance.note')}
+        </Text>
+        <Controller
           control={control}
           name="note"
-          label={translate('finance.note')}
-          placeholder={translate('finance.add_note')}
-          multiline
-          numberOfLines={4}
-          textAlignVertical="top"
-          className="min-h-[100px]"
+          render={({ field: { onChange, onBlur, value }, fieldState }) => (
+            <View className="mb-2">
+              <View className="rounded-2xl border border-neutral-300 bg-white px-3 py-2 dark:border-neutral-700 dark:bg-neutral-800">
+                <TextInput
+                  value={value}
+                  onChangeText={(text) => onChange(text.slice(0, NOTE_MAX))}
+                  onBlur={onBlur}
+                  placeholder={translate('finance.add_note')}
+                  placeholderTextColor={
+                    colorScheme === 'dark'
+                      ? colors.neutral[500]
+                      : colors.neutral[400]
+                  }
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                  maxLength={NOTE_MAX}
+                  className="min-h-[88px] text-base text-black dark:text-white"
+                />
+                <Text className="self-end text-xs text-neutral-400">
+                  {noteValue.length}/{NOTE_MAX}
+                </Text>
+              </View>
+              {fieldState.error?.message ? (
+                <Text className="mt-1 text-sm text-danger-400">
+                  {fieldState.error.message}
+                </Text>
+              ) : null}
+            </View>
+          )}
         />
 
         <Button
           label={translate('finance.save')}
           onPress={handleSubmit(onSubmit)}
-          className="mt-4 h-12 rounded-xl"
+          className="mt-4 h-12 rounded-xl bg-finance-green"
           textClassName="text-white"
-          style={{ backgroundColor: FINANCE_GREEN }}
           testID="save-transaction"
         />
-        <Button
-          label={translate('finance.cancel')}
-          onPress={onCancel}
-          variant="outline"
-          className="h-12 rounded-xl border-neutral-300 bg-white"
-        />
+        <Pressable onPress={onCancel} className="mt-2 items-center py-3">
+          <Text className="font-semibold" style={{ color: FINANCE_GREEN }}>
+            {translate('finance.cancel')}
+          </Text>
+        </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 });
+
+function CategoryGrid({
+  control,
+  categories,
+}: {
+  control: Control<TransactionFormType>;
+  categories: string[];
+}) {
+  return (
+    <Controller
+      control={control}
+      name="category"
+      render={({ field: { value, onChange }, fieldState }) => (
+        <View className="mb-4">
+          <View className="flex-row flex-wrap">
+            {categories.map((name) => {
+              const selected = value === name;
+              const color = getCategoryColor(name);
+              return (
+                <View key={name} className="w-1/3 p-1">
+                  <Pressable
+                    onPress={() => onChange(name)}
+                    className={`items-center rounded-2xl border py-3 ${
+                      selected
+                        ? 'border-finance-green bg-finance-green/10'
+                        : 'border-neutral-200 dark:border-neutral-700'
+                    }`}
+                  >
+                    <View className="mb-1 size-8 items-center justify-center">
+                      {hasCategoryIcon(name) ? (
+                        <CategoryGlyph
+                          name={name}
+                          color={selected ? FINANCE_GREEN : color}
+                        />
+                      ) : (
+                        <View
+                          className="size-8 items-center justify-center rounded-full"
+                          style={{ backgroundColor: `${color}22` }}
+                        >
+                          <Text
+                            className="text-xs font-bold"
+                            style={{ color }}
+                          >
+                            {name.slice(0, 1).toUpperCase()}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+                    <Text
+                      className={`mt-1 px-0.5 text-center text-xs font-semibold ${
+                        selected
+                          ? 'text-finance-green'
+                          : 'text-neutral-800 dark:text-neutral-200'
+                      }`}
+                      numberOfLines={1}
+                    >
+                      {name}
+                    </Text>
+                  </Pressable>
+                </View>
+              );
+            })}
+          </View>
+          {fieldState.error?.message ? (
+            <Text className="mt-1 text-sm text-danger-400">
+              {fieldState.error.message}
+            </Text>
+          ) : null}
+        </View>
+      )}
+    />
+  );
+}
 
 function TypeToggle({ control }: { control: Control<TransactionFormType> }) {
   return (
@@ -144,32 +269,38 @@ function TypeToggle({ control }: { control: Control<TransactionFormType> }) {
         <View className="mb-4 flex-row gap-3">
           <Pressable
             onPress={() => onChange('income')}
-            className="flex-1 flex-row items-center justify-center rounded-xl border py-3"
-            style={
+            className={`flex-1 flex-row items-center justify-center rounded-2xl border py-3 ${
               value === 'income'
-                ? { backgroundColor: FINANCE_GREEN, borderColor: FINANCE_GREEN }
-                : { backgroundColor: '#fff', borderColor: '#D4D4D4' }
-            }
+                ? 'border-finance-green bg-finance-green/10'
+                : 'border-neutral-200 dark:border-neutral-700'
+            }`}
           >
-            <ArrowDown color={value === 'income' ? '#fff' : '#525252'} />
+            <ArrowDown color={FINANCE_GREEN} />
             <Text
-              className={`ml-2 font-semibold ${value === 'income' ? 'text-white' : 'text-neutral-800'}`}
+              className={`ml-2 font-semibold ${
+                value === 'income'
+                  ? 'text-finance-green'
+                  : 'text-neutral-800 dark:text-neutral-200'
+              }`}
             >
               {translate('finance.income')}
             </Text>
           </Pressable>
           <Pressable
             onPress={() => onChange('expense')}
-            className="flex-1 flex-row items-center justify-center rounded-xl border py-3"
-            style={
+            className={`flex-1 flex-row items-center justify-center rounded-2xl border py-3 ${
               value === 'expense'
-                ? { backgroundColor: FINANCE_GREEN, borderColor: FINANCE_GREEN }
-                : { backgroundColor: '#fff', borderColor: '#D4D4D4' }
-            }
+                ? 'border-finance-red bg-finance-red/10'
+                : 'border-neutral-200 dark:border-neutral-700'
+            }`}
           >
-            <ArrowUp color={value === 'expense' ? '#fff' : '#525252'} />
+            <ArrowUp color={FINANCE_RED} />
             <Text
-              className={`ml-2 font-semibold ${value === 'expense' ? 'text-white' : 'text-neutral-800'}`}
+              className={`ml-2 font-semibold ${
+                value === 'expense'
+                  ? 'text-finance-red'
+                  : 'text-neutral-800 dark:text-neutral-200'
+              }`}
             >
               {translate('finance.expense')}
             </Text>

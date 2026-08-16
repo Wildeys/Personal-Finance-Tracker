@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx';
-import { makePersistable, hydrateStore, stopPersisting } from 'mobx-persist-store';
+import { makePersistable, hydrateStore } from 'mobx-persist-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type TokenType = {
@@ -9,26 +9,61 @@ export type TokenType = {
 
 export type AuthStatus = 'idle' | 'signOut' | 'signIn';
 
+export type ProfileInput = {
+  name?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+};
+
 export class AuthStore {
   token: TokenType | null = null;
   status: AuthStatus = 'idle';
   isFirstTime = true;
+  name = '';
+  email = '';
+  password = '';
+  phone = '';
+  memberSince = '';
 
   constructor() {
     makeAutoObservable(this);
-    
-    // Configure automatic persistence
+
     makePersistable(this, {
       name: 'AuthStore',
-      properties: ['token', 'status', 'isFirstTime'],
+      properties: [
+        'token',
+        'status',
+        'isFirstTime',
+        'name',
+        'email',
+        'password',
+        'phone',
+        'memberSince',
+      ],
     });
   }
 
-  signIn(tokenData: TokenType) {
-    console.log('signIn called with:', tokenData);
+  signIn(tokenData: TokenType, profile?: ProfileInput) {
     this.token = tokenData;
     this.status = 'signIn';
-    console.log('Auth status set to signIn');
+    if (profile) {
+      this.applyProfile(profile);
+    }
+    if (!this.memberSince) {
+      this.memberSince = new Date().toISOString();
+    }
+  }
+
+  updateProfile(profile: ProfileInput) {
+    this.applyProfile(profile);
+  }
+
+  private applyProfile(profile: ProfileInput) {
+    if (profile.name !== undefined) this.name = profile.name.trim();
+    if (profile.email !== undefined) this.email = profile.email.trim();
+    if (profile.password !== undefined) this.password = profile.password;
+    if (profile.phone !== undefined) this.phone = profile.phone.trim();
   }
 
   setIsFirstTime(value: boolean) {
@@ -36,17 +71,22 @@ export class AuthStore {
   }
 
   async signOut() {
-    // Clear the persisted data from AsyncStorage
     await AsyncStorage.removeItem('AuthStore');
-    
-    // Reset the store state
+
     this.token = null;
     this.status = 'signOut';
     this.isFirstTime = true;
+    this.name = '';
+    this.email = '';
+    this.password = '';
+    this.phone = '';
+    this.memberSince = '';
   }
 
   hydrate = async (): Promise<void> => {
     await hydrateStore(this);
+    if (this.status === 'signIn' && !this.memberSince) {
+      this.memberSince = new Date().toISOString();
+    }
   };
 }
-

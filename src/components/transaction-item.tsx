@@ -49,7 +49,7 @@ export const TransactionItem = observer(({ item }: Props) => {
         <Text className="font-semibold" numberOfLines={1}>
           {title}
         </Text>
-        <Text className="text-sm text-neutral-500">
+        <Text className="text-sm text-neutral-500 dark:text-neutral-400">
           {typeLabel} • {item.category}
         </Text>
       </View>
@@ -59,9 +59,9 @@ export const TransactionItem = observer(({ item }: Props) => {
           style={{ color: isIncome ? FINANCE_GREEN : FINANCE_RED }}
         >
           {isIncome ? '+' : '-'}
-          {formatCurrency(item.amount)}
+          {formatCurrency(item.amount, finance.currency)}
         </Text>
-        <Text className="text-xs text-neutral-400">
+        <Text className="text-xs text-neutral-400 dark:text-neutral-500">
           {formatTransactionDate(item.createdAt)}
         </Text>
       </View>

@@ -48,8 +48,13 @@ export class UIThemeStore {
       this.appearance = this.appearanceFromUIToInternal(theme);
     }
     
-    // Sync with NativeWind
-    const nativeWindTheme = theme === 'System' ? 'system' : theme.toLowerCase() as 'light' | 'dark' | 'system';
+    this.applyNativeWind();
+  };
+
+  private applyNativeWind = (): void => {
+    const nativeWindTheme = this.isSystemAppearance
+      ? 'system'
+      : this.appearance;
     colorScheme.set(nativeWindTheme);
   };
 
@@ -105,6 +110,7 @@ export class UIThemeStore {
 
   hydrate = async (): PVoid => {
     await hydrateStore(this);
+    this.applyNativeWind();
   };
 }
 

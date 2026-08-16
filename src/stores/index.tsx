@@ -8,9 +8,9 @@ import { UILanguageStore } from './ui-language-store';
 import { UIThemeStore } from './ui-theme-store';
 import { IStore, PVoid } from './types';
 
-// Re-export types
+export type { ProfileInput } from './auth-store';
 export type { TokenType, AuthStatus };
-export type { Transaction, TransactionType } from './finance-store';
+export type { Transaction, TransactionType, CurrencyCode } from './finance-store';
 
 // Centralized stores object
 class Stores {

@@ -20,19 +20,23 @@ export const DEFAULT_CATEGORIES = [
   'Health',
   'Entertainment',
   'Salary',
+  'Work',
   'Other',
 ];
+
+export type CurrencyCode = 'USD' | 'MVR';
 
 export class FinanceStore {
   transactions: Transaction[] = [];
   categories: string[] = [...DEFAULT_CATEGORIES];
+  currency: CurrencyCode = 'MVR';
 
   constructor() {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: 'FinanceStore',
-      properties: ['transactions', 'categories'],
+      properties: ['transactions', 'categories', 'currency'],
     });
   }
 
@@ -79,11 +83,38 @@ export class FinanceStore {
     this.categories = this.categories.filter((c) => c !== name);
   }
 
+  setCurrency(currency: CurrencyCode) {
+    this.currency = currency;
+  }
+
   clearTransactions() {
     this.transactions = [];
   }
 
+  ensureDefaultCategories() {
+    const byLower = new Map(
+      this.categories.map((name) => [name.toLowerCase(), name])
+    );
+    const merged: string[] = [];
+
+    for (const name of DEFAULT_CATEGORIES) {
+      merged.push(byLower.get(name.toLowerCase()) ?? name);
+      byLower.delete(name.toLowerCase());
+    }
+
+    for (const name of this.categories) {
+      const key = name.toLowerCase();
+      if (byLower.has(key)) {
+        merged.push(name);
+        byLower.delete(key);
+      }
+    }
+
+    this.categories = merged;
+  }
+
   hydrate = async (): Promise<void> => {
     await hydrateStore(this);
+    this.ensureDefaultCategories();
   };
 }

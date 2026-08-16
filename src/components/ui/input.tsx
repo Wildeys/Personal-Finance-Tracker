@@ -6,13 +6,14 @@ import type {
   RegisterOptions,
 } from 'react-hook-form';
 import { useController } from 'react-hook-form';
-import type { TextInputProps } from 'react-native';
-import { I18nManager, StyleSheet, View } from 'react-native';
-import { TextInput as NTextInput } from 'react-native';
+import { useColorScheme } from 'nativewind';
+import type { TextInput as RNTextInput, TextInputProps } from 'react-native';
+import { I18nManager, StyleSheet } from 'react-native';
 import { tv } from 'tailwind-variants';
 
 import colors from './colors';
 import { Text } from './text';
+import { TextInput, View } from './themed-rn';
 
 const inputTv = tv({
   slots: {
@@ -71,7 +72,8 @@ interface ControlledInputProps<T extends FieldValues>
   extends NInputProps,
     InputControllerType<T> {}
 
-export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
+export const Input = React.forwardRef<RNTextInput, NInputProps>((props, ref) => {
+  const { colorScheme } = useColorScheme();
   const { label, error, testID, ...inputProps } = props;
   const [isFocussed, setIsFocussed] = React.useState(false);
   const onBlur = React.useCallback(() => setIsFocussed(false), []);
@@ -97,10 +99,12 @@ export const Input = React.forwardRef<NTextInput, NInputProps>((props, ref) => {
           {label}
         </Text>
       )}
-      <NTextInput
+      <TextInput
         testID={testID}
         ref={ref}
-        placeholderTextColor={colors.neutral[400]}
+        placeholderTextColor={
+          colorScheme === 'dark' ? colors.neutral[500] : colors.neutral[400]
+        }
         className={styles.input()}
         onBlur={onBlur}
         onFocus={onFocus}

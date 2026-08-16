@@ -2,6 +2,7 @@ import React from 'react';
 import type { TextProps, TextStyle } from 'react-native';
 import { I18nManager, StyleSheet, Text as NNText } from 'react-native';
 import { observer } from 'mobx-react-lite';
+import { useColorScheme } from 'nativewind';
 import { twMerge } from 'tailwind-merge';
 
 import type { TxKeyPath } from '@/lib/i18n';
@@ -19,6 +20,8 @@ export const Text = observer(({
   children,
   ...props
 }: Props) => {
+  useColorScheme();
+
   const textStyle = React.useMemo(
     () =>
       twMerge(

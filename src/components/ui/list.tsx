@@ -1,14 +1,15 @@
-import { FlashList as NFlashList } from '@shopify/flash-list';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
 import { Text } from './text';
+import { FlashList } from './themed-rn';
+
 type Props = {
   isLoading: boolean;
 };
 
-export const List = NFlashList;
+export const List = FlashList;
 
 export const EmptyList = React.memo(({ isLoading }: Props) => {
   return (

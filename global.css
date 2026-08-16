@@ -1,3 +1,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+  --color-finance-green: #2e7d32;
+  --color-finance-red: #e53935;
+}

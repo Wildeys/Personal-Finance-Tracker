@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import type { OptionType } from '@/components/ui';
 import { Options, useModal } from '@/components/ui';
+import { LanguageIcon } from '@/components/ui/icons';
 import { translate } from '@/lib';
 import { useStores } from '@/stores';
 import type { Language } from '@/lib/i18n/resources';
@@ -39,6 +40,7 @@ export const LanguageItem = observer(() => {
         text="settings.language"
         value={selectedLanguage?.label}
         onPress={modal.present}
+        icon={<LanguageIcon />}
       />
       <Options
         ref={modal.ref}

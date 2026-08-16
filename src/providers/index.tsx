@@ -1,27 +1,52 @@
-import { StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect } from 'react';
+import { Appearance, StyleSheet, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider } from '@react-navigation/native';
 import FlashMessage from 'react-native-flash-message';
 import { observer } from 'mobx-react-lite';
+import { useColorScheme } from 'nativewind';
 import { APIProvider } from '@/api/common/api-provider';
 import { StoresProvider, useStores } from '@/stores';
 import { AuthProvider } from './auth-provider';
 
 const ThemedApp = observer(({ children }: { children: React.ReactNode }) => {
   const { uiTheme } = useStores();
-  
+  const dark = uiTheme.effectiveAppearance === 'dark';
+  const { setColorScheme } = useColorScheme();
+
+  useEffect(() => {
+    const next = uiTheme.isSystemAppearance ? 'system' : uiTheme.appearance;
+    setColorScheme(next);
+    Appearance.setColorScheme(
+      uiTheme.isSystemAppearance ? null : uiTheme.appearance
+    );
+  }, [
+    setColorScheme,
+    uiTheme.isSystemAppearance,
+    uiTheme.appearance,
+    uiTheme.effectiveAppearance,
+  ]);
+
   return (
-    <ThemeProvider value={uiTheme.navigationTheme}>
-      <AuthProvider>
-        <APIProvider>
-          <BottomSheetModalProvider>
-            {children}
-            <FlashMessage position="top" />
-          </BottomSheetModalProvider>
-        </APIProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <View
+      className={`flex-1 ${dark ? 'dark' : ''}`}
+      style={[
+        styles.container,
+        { backgroundColor: dark ? '#171717' : '#ffffff' },
+      ]}
+    >
+      <ThemeProvider value={uiTheme.navigationTheme}>
+        <AuthProvider>
+          <APIProvider>
+            <BottomSheetModalProvider>
+              {children}
+              <FlashMessage position="top" />
+            </BottomSheetModalProvider>
+          </APIProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </View>
   );
 });
 
@@ -29,9 +54,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <GestureHandlerRootView style={styles.container}>
       <StoresProvider>
-        <ThemedApp>
-          {children}
-        </ThemedApp>
+        <ThemedApp>{children}</ThemedApp>
       </StoresProvider>
     </GestureHandlerRootView>
   );

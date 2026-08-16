@@ -3,7 +3,9 @@ import { observer } from 'mobx-react-lite';
 
 import type { OptionType } from '@/components/ui';
 import { Options, useModal } from '@/components/ui';
+import { ThemeIcon } from '@/components/ui/icons';
 import { translate } from '@/lib';
+import type { TxKeyPath } from '@/lib';
 import { useStores } from '@/stores';
 import type { UIAppearance } from '@/stores/types';
 
@@ -34,8 +36,11 @@ export const ThemeItem = observer(() => {
     <>
       <Item
         text="settings.theme.title"
-        value={theme?.label}
+        value={translate(
+          `settings.theme.${uiTheme.selectedTheme.toLowerCase()}` as TxKeyPath
+        )}
         onPress={modal.present}
+        icon={<ThemeIcon />}
       />
       <Options
         ref={modal.ref}

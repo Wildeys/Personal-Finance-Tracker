@@ -1,7 +1,8 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Redirect, Tabs } from 'expo-router';
+import { Redirect, Tabs, useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import { useTheme } from '@react-navigation/native';
 
 import { useAuth } from '@/providers/auth-provider';
 import {
@@ -14,6 +15,8 @@ import { FINANCE_GREEN } from '@/utils';
 
 export default observer(function TabLayout() {
   const { status, isFirstTime } = useAuth();
+  const { dark } = useTheme();
+  const router = useRouter();
 
   if (isFirstTime) {
     return <Redirect href="/(auth)/onboarding" />;
@@ -29,10 +32,11 @@ export default observer(function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: FINANCE_GREEN,
         tabBarInactiveTintColor: '#9CA3AF',
+        tabBarHideOnKeyboard: true,
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
         tabBarStyle: {
-          borderTopColor: '#E5E7EB',
-          backgroundColor: '#FFFFFF',
+          borderTopColor: dark ? '#404040' : '#E5E7EB',
+          backgroundColor: dark ? '#1E1E1E' : '#FFFFFF',
         },
       }}
     >
@@ -56,8 +60,20 @@ export default observer(function TabLayout() {
         name="settings"
         options={{
           title: translate('finance.settings'),
+          href: '/settings',
           tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
           tabBarButtonTestID: 'settings-tab',
+        }}
+        listeners={{
+          tabPress: () => {
+            router.navigate('/settings');
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="transactions"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
