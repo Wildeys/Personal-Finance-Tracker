@@ -1,5 +1,3 @@
-import 'dotenv/config';
-
 export default {
   expo: {
     name: "Personal-Finance-Tracker",
@@ -14,14 +12,6 @@ export default {
     },
     plugins: [
       "expo-router",
-      [
-        "expo-camera",
-        {
-          cameraPermission: "Allow $(PRODUCT_NAME) to access your camera",
-          microphonePermission: "Allow $(PRODUCT_NAME) to access your microphone",
-          recordAudioAndroid: true
-        }
-      ],
       "expo-localization",
       "react-native-edge-to-edge"
     ],
@@ -47,12 +37,6 @@ export default {
         foregroundImage: "./assets/adaptive-icon.png",
         backgroundColor: "#ffffff"
       }
-    },
-    extra: {
-      API_URL: process.env.API_URL,
-      SECRET_KEY: process.env.SECRET_KEY,
-      VAR_NUMBER: process.env.VAR_NUMBER,
-      VAR_BOOL: process.env.VAR_BOOL,
     }
   }
 };

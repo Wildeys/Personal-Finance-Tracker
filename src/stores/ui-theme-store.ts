@@ -5,8 +5,6 @@ import { Appearance } from 'react-native';
 import type { Theme } from '@react-navigation/native';
 import { DarkTheme, LightTheme } from '@/lib/theme';
 import { AppearanceMode, PVoid, UIAppearance } from './types';
-// import * as Updates from "expo-updates";
-
 
 export class UIThemeStore {
   isSystemAppearance = false;
@@ -17,7 +15,6 @@ export class UIThemeStore {
   setAppearanceMode = async (v: UIAppearance): Promise<void> => {
     this.isSystemAppearance = v === "System";
     this.appearance = this.appearanceFromUIToInternal(v);
-    // await Updates.reloadAsync();
   };
 
   get appearanceName(): UIAppearance {

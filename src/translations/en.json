@@ -1,35 +1,16 @@
 {
-  "onboarding": {
-    "message": "Welcome to obytes app site"
-  },
   "settings": {
-    "about": "About",
-    "app_name": "App Name",
     "arabic": "Arabic",
     "english": "English",
-    "generale": "General",
-    "github": "Github",
     "language": "Language",
-    "links": "Links",
-    "logout": "Logout",
-    "more": "More",
-    "privacy": "Privacy Policy",
-    "rate": "Rate",
-    "share": "Share",
-    "support": "Support",
-    "support_us": "Support Us",
-    "terms": "Terms of Service",
     "theme": {
       "dark": "Dark",
       "light": "Light",
       "system": "System",
       "title": "Theme"
     },
-    "title": "Settings",
-    "version": "Version",
-    "website": "Website"
+    "title": "Settings"
   },
-  "welcome": "Welcome to obytes app site",
   "finance": {
     "home": "Home",
     "settings": "Settings",
@@ -50,10 +31,8 @@
     "add_subtitle": "Track your income and expenses",
     "amount": "Amount",
     "enter_amount": "0",
-    "other_more": "... Other",
     "type": "Type",
     "category": "Category",
-    "select_category": "Select category",
     "note": "Note (optional)",
     "add_note": "Add a note about this transaction",
     "save": "Save Transaction",
@@ -65,14 +44,12 @@
     "categories": "Categories",
     "new_category": "New category name",
     "add": "Add",
-    "actions": "Actions",
     "preferences": "Preferences",
     "currency": "Currency",
     "currency_usd": "USD ($)",
     "currency_mvr": "MVR (Rf)",
     "clear_all": "Clear all transactions",
     "clear_confirm": "This will remove all transactions. Continue?",
-    "required": "required",
     "login_title": "Sign In",
     "login_subtitle": "Welcome! This is a demo login screen. Feel free to use any email and password to sign in and try it out.",
     "login_name": "Name",

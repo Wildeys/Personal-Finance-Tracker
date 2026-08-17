@@ -10,7 +10,7 @@ export * from './select';
 export * from './text';
 export * from './themed-rn';
 
-export { ActivityIndicator, TouchableOpacity } from 'react-native';
+export { ActivityIndicator } from 'react-native';
 export { SafeAreaView } from 'react-native-safe-area-context';
 
 //Apply cssInterop to Svg to resolve className string into style

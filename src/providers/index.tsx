@@ -3,10 +3,8 @@ import { Appearance, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { ThemeProvider } from '@react-navigation/native';
-import FlashMessage from 'react-native-flash-message';
 import { observer } from 'mobx-react-lite';
 import { useColorScheme } from 'nativewind';
-import { APIProvider } from '@/api/common/api-provider';
 import { StoresProvider, useStores } from '@/stores';
 import { AuthProvider } from './auth-provider';
 
@@ -38,12 +36,7 @@ const ThemedApp = observer(({ children }: { children: React.ReactNode }) => {
     >
       <ThemeProvider value={uiTheme.navigationTheme}>
         <AuthProvider>
-          <APIProvider>
-            <BottomSheetModalProvider>
-              {children}
-              <FlashMessage position="top" />
-            </BottomSheetModalProvider>
-          </APIProvider>
+          <BottomSheetModalProvider>{children}</BottomSheetModalProvider>
         </AuthProvider>
       </ThemeProvider>
     </View>

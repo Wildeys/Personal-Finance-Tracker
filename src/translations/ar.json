@@ -1,35 +1,16 @@
 {
-  "onboarding": {
-    "message": "مرحبا بكم في موقع تطبيق obytes"
-  },
   "settings": {
-    "about": "حول التطبيق",
-    "app_name": "اسم التطبيق",
     "arabic": "عربي",
     "english": "إنجليزي",
-    "generale": "عام",
-    "github": "جيثب",
     "language": "لغة",
-    "links": "الروابط",
-    "logout": "تسجيل خروج",
-    "more": "أكثر",
-    "privacy": "سياسة الخصوصية",
-    "rate": "تقييم",
-    "share": "شارك",
-    "support": "الدعم",
-    "support_us": "ادعمنا",
-    "terms": "شروط الخدمة",
     "theme": {
       "dark": "مظلم",
       "light": "خفيفة",
       "system": "النظام",
       "title": "سمة"
     },
-    "title": "إعدادات",
-    "version": "إصدار",
-    "website": "موقع الكتروني"
+    "title": "إعدادات"
   },
-  "welcome": "مرحبا بكم في موقع تطبيق obytes",
   "finance": {
     "home": "الرئيسية",
     "settings": "الإعدادات",
@@ -50,10 +31,8 @@
     "add_subtitle": "تتبع دخلك ومصروفاتك",
     "amount": "المبلغ",
     "enter_amount": "0",
-    "other_more": "... أخرى",
     "type": "النوع",
     "category": "الفئة",
-    "select_category": "اختر الفئة",
     "note": "ملاحظة (اختياري)",
     "add_note": "أضف ملاحظة عن هذه المعاملة",
     "save": "حفظ المعاملة",
@@ -65,14 +44,12 @@
     "categories": "الفئات",
     "new_category": "اسم فئة جديدة",
     "add": "إضافة",
-    "actions": "إجراءات",
     "preferences": "التفضيلات",
     "currency": "العملة",
     "currency_usd": "دولار ($)",
     "currency_mvr": "روفية (Rf)",
     "clear_all": "مسح كل المعاملات",
     "clear_confirm": "سيتم حذف كل المعاملات. هل تريد المتابعة؟",
-    "required": "مطلوب",
     "login_title": "تسجيل الدخول",
     "login_subtitle": "مرحبا! هذه شاشة تسجيل دخول تجريبية. يمكنك استخدام أي بريد إلكتروني وكلمة مرور للدخول وتجربة التطبيق.",
     "login_name": "الاسم",
