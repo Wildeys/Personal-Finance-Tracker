@@ -12,7 +12,7 @@ import { useStores } from '@/stores';
 export default observer(function AddTransaction() {
   const router = useRouter();
   const { finance } = useStores();
-  const goHome = () => router.replace('/');
+  const goHome = () => router.navigate('/');
 
   const onSubmit = (data: TransactionFormType) => {
     finance.addTransaction({
@@ -21,7 +21,7 @@ export default observer(function AddTransaction() {
       category: data.category,
       note: data.note?.trim() || undefined,
     });
-    router.replace('/');
+    router.navigate('/');
   };
 
   return (

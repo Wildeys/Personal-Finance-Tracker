@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { Alert, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { Text, View } from '@/components/ui';
 import { ArrowDown, ArrowUp, Trash } from '@/components/ui/icons';
@@ -10,6 +10,7 @@ import { useStores } from '@/stores';
 import {
   FINANCE_GREEN,
   FINANCE_RED,
+  confirm,
   formatCurrency,
   formatTransactionDate,
 } from '@/utils';
@@ -27,14 +28,13 @@ export const TransactionItem = observer(({ item }: Props) => {
     : translate('finance.expense');
 
   const onDelete = () => {
-    Alert.alert(translate('finance.delete'), translate('finance.delete_confirm'), [
-      { text: translate('finance.cancel'), style: 'cancel' },
-      {
-        text: translate('finance.delete'),
-        style: 'destructive',
-        onPress: () => finance.deleteTransaction(item.id),
-      },
-    ]);
+    confirm(
+      translate('finance.delete'),
+      translate('finance.delete_confirm'),
+      () => finance.deleteTransaction(item.id),
+      translate('finance.delete'),
+      translate('finance.cancel')
+    );
   };
 
   return (

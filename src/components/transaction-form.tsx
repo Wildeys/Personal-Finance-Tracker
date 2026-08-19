@@ -1,5 +1,6 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useFocusEffect } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import { useColorScheme } from 'nativewind';
 import React from 'react';
@@ -25,22 +26,30 @@ import { FINANCE_GREEN, FINANCE_RED, getCategoryColor } from '@/utils';
 
 const NOTE_MAX = 120;
 
-const schema = z.object({
-  amount: z
-    .string()
-    .min(1, translate('finance.validation.amount_required'))
-    .refine((v) => !Number.isNaN(Number(v)) && Number(v) > 0, {
-      message: translate('finance.validation.amount_invalid'),
-    }),
-  type: z.enum(['income', 'expense']),
-  category: z.string().min(1, translate('finance.validation.category_required')),
-  note: z
-    .string()
-    .max(NOTE_MAX, translate('finance.validation.note_too_long'))
-    .optional(),
-});
+const makeSchema = () =>
+  z.object({
+    amount: z
+      .string()
+      .min(1, translate('finance.validation.amount_required'))
+      .refine((v) => /^\d+(\.\d{1,2})?$/.test(v.trim()) && Number(v) > 0, {
+        message: translate('finance.validation.amount_invalid'),
+      }),
+    type: z.enum(['income', 'expense']),
+    category: z.string().min(1, translate('finance.validation.category_required')),
+    note: z
+      .string()
+      .max(NOTE_MAX, translate('finance.validation.note_too_long'))
+      .optional(),
+  });
 
-export type TransactionFormType = z.infer<typeof schema>;
+export type TransactionFormType = z.infer<ReturnType<typeof makeSchema>>;
+
+const EMPTY_FORM: TransactionFormType = {
+  amount: '',
+  type: 'income',
+  category: '',
+  note: '',
+};
 
 type Props = {
   onSubmit: (data: TransactionFormType) => void;
@@ -48,19 +57,37 @@ type Props = {
 };
 
 export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
-  const { finance } = useStores();
+  const { finance, uiLanguage } = useStores();
   const { colorScheme } = useColorScheme();
-  const tabBarHeight = useBottomTabBarHeight();
+  const tabBarHeight = React.useContext(BottomTabBarHeightContext) ?? 0;
   const [amountFocused, setAmountFocused] = React.useState(false);
-  const { handleSubmit, control } = useForm<TransactionFormType>({
+  const schema = React.useMemo(
+    () => makeSchema(),
+    [uiLanguage.language]
+  );
+  const { handleSubmit, control, reset } = useForm<TransactionFormType>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      amount: '',
-      type: 'income',
-      category: '',
-      note: '',
-    },
+    defaultValues: EMPTY_FORM,
   });
+
+  const clearForm = React.useCallback(() => {
+    reset(EMPTY_FORM);
+    setAmountFocused(false);
+  }, [reset]);
+
+  const submit = handleSubmit((data) => {
+    onSubmit(data);
+    clearForm();
+  });
+
+  useFocusEffect(
+    React.useCallback(
+      () => () => {
+        clearForm();
+      },
+      [clearForm]
+    )
+  );
 
   const noteValue = useWatch({ control, name: 'note' }) ?? '';
   const currencyPrefix = finance.currency === 'MVR' ? 'Rf' : '$';
@@ -172,7 +199,7 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
 
         <Button
           label={translate('finance.save')}
-          onPress={handleSubmit(onSubmit)}
+          onPress={submit}
           className="mt-4 h-12 rounded-xl bg-finance-green"
           textClassName="text-white"
           testID="save-transaction"

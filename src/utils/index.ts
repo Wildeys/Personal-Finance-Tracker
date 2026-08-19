@@ -1,3 +1,5 @@
+export { confirm, notify } from './confirm';
+
 export const FINANCE_GREEN = '#2E7D32';
 export const FINANCE_RED = '#E53935';
 

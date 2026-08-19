@@ -29,6 +29,7 @@ export type CurrencyCode = 'USD' | 'MVR';
 export class FinanceStore {
   transactions: Transaction[] = [];
   categories: string[] = [...DEFAULT_CATEGORIES];
+  removedDefaults: string[] = [];
   currency: CurrencyCode = 'MVR';
 
   constructor() {
@@ -36,7 +37,7 @@ export class FinanceStore {
 
     makePersistable(this, {
       name: 'FinanceStore',
-      properties: ['transactions', 'categories', 'currency'],
+      properties: ['transactions', 'categories', 'removedDefaults', 'currency'],
     });
   }
 
@@ -75,11 +76,20 @@ export class FinanceStore {
       (c) => c.toLowerCase() === trimmed.toLowerCase()
     );
     if (exists) return false;
+    this.removedDefaults = this.removedDefaults.filter(
+      (d) => d !== trimmed.toLowerCase()
+    );
     this.categories.push(trimmed);
     return true;
   }
 
   removeCategory(name: string) {
+    const isDefault = DEFAULT_CATEGORIES.some(
+      (d) => d.toLowerCase() === name.toLowerCase()
+    );
+    if (isDefault && !this.removedDefaults.includes(name.toLowerCase())) {
+      this.removedDefaults.push(name.toLowerCase());
+    }
     this.categories = this.categories.filter((c) => c !== name);
   }
 
@@ -98,8 +108,10 @@ export class FinanceStore {
     const merged: string[] = [];
 
     for (const name of DEFAULT_CATEGORIES) {
-      merged.push(byLower.get(name.toLowerCase()) ?? name);
-      byLower.delete(name.toLowerCase());
+      const key = name.toLowerCase();
+      if (this.removedDefaults.includes(key)) continue;
+      merged.push(byLower.get(key) ?? name);
+      byLower.delete(key);
     }
 
     for (const name of this.categories) {

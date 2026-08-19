@@ -12,7 +12,7 @@ import {
   View,
 } from '@/components/ui';
 import { ArrowDown, ArrowUp } from '@/components/ui/icons';
-import { translate } from '@/lib';
+import { translate, type TxKeyPath } from '@/lib';
 import { useAuth } from '@/providers/auth-provider';
 import { useStores } from '@/stores';
 import {
@@ -30,8 +30,9 @@ const HomeHeader = observer(function HomeHeader() {
   const { name, email } = useAuth();
   const greetingKey = getGreetingKey();
   const displayName = name.trim();
+  const greetingNameKey = `finance.greeting_${greetingKey}_name` as TxKeyPath;
   const greeting = displayName
-    ? translate(`finance.greeting_${greetingKey}_name`, { name: displayName })
+    ? translate(greetingNameKey, { name: displayName })
     : greetingKey === 'morning'
       ? translate('finance.greeting_morning')
       : greetingKey === 'afternoon'

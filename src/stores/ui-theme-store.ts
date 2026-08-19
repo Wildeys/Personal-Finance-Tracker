@@ -12,17 +12,6 @@ export class UIThemeStore {
   systemColorScheme: AppearanceMode | null = Appearance.getColorScheme() || 'light';
   private appearanceListener: any = null;
 
-  setAppearanceMode = async (v: UIAppearance): Promise<void> => {
-    this.isSystemAppearance = v === "System";
-    this.appearance = this.appearanceFromUIToInternal(v);
-  };
-
-  get appearanceName(): UIAppearance {
-    return this.isSystemAppearance
-      ? "System"
-      : this.appearanceFromInternalToUI(this.appearance);
-  }
-
   private appearanceFromInternalToUI = (v: AppearanceMode): UIAppearance => {
     return v === "light" ? "Light" : "Dark";
   };
@@ -31,7 +20,6 @@ export class UIThemeStore {
     return v === "Light" ? "light" : "dark";
   };
 
-  // Alias methods for consistency with existing hooks
   get selectedTheme(): UIAppearance {
     if (this.isSystemAppearance) return 'System';
     return this.appearanceFromInternalToUI(this.appearance);
@@ -55,7 +43,6 @@ export class UIThemeStore {
     colorScheme.set(nativeWindTheme);
   };
 
-  // Get React Navigation theme based on current appearance
   get navigationTheme(): Theme {
     if (this.isSystemAppearance) {
       return this.systemColorScheme === 'dark' ? DarkTheme : LightTheme;
@@ -63,7 +50,6 @@ export class UIThemeStore {
     return this.appearance === 'dark' ? DarkTheme : LightTheme;
   }
 
-  // Get the current effective appearance mode (resolves System to actual mode)
   get effectiveAppearance(): AppearanceMode {
     if (this.isSystemAppearance) {
       return this.systemColorScheme || 'light';
@@ -72,12 +58,10 @@ export class UIThemeStore {
   }
 
   private setupAppearanceListener = () => {
-    // Clean up existing listener if any
     if (this.appearanceListener) {
       this.appearanceListener.remove();
     }
 
-    // Listen to system appearance changes
     this.appearanceListener = Appearance.addChangeListener(({ colorScheme }) => {
       this.systemColorScheme = colorScheme || 'light';
     });
@@ -94,20 +78,11 @@ export class UIThemeStore {
       debugMode: false,
     });
     
-    // Setup appearance listener
     this.setupAppearanceListener();
   }
-
-  // Cleanup method
-  dispose = () => {
-    if (this.appearanceListener) {
-      this.appearanceListener.remove();
-    }
-  };
 
   hydrate = async (): PVoid => {
     await hydrateStore(this);
     this.applyNativeWind();
   };
 }
-

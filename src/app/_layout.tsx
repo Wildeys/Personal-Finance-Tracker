@@ -27,17 +27,17 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (isHydrated) {
-      // Hide splash screen once the app is ready
-      const hideSplash = async () => {
-        await SplashScreen.hideAsync();
-      };
-      
-      // Small delay to ensure smooth transition
-      setTimeout(() => {
-        hideSplash();
-      }, 500);
-    }
+    if (!isHydrated) return;
+
+    const hideSplash = async () => {
+      await SplashScreen.hideAsync();
+    };
+
+    const id = setTimeout(() => {
+      hideSplash();
+    }, 500);
+
+    return () => clearTimeout(id);
   }, [isHydrated]);
 
   if (!isHydrated) {

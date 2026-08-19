@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
 import { makePersistable, hydrateStore } from 'mobx-persist-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type TokenType = {
   access: string;
@@ -37,7 +36,6 @@ export class AuthStore {
         'isFirstTime',
         'name',
         'email',
-        'password',
         'phone',
         'memberSince',
       ],
@@ -62,7 +60,9 @@ export class AuthStore {
   private applyProfile(profile: ProfileInput) {
     if (profile.name !== undefined) this.name = profile.name.trim();
     if (profile.email !== undefined) this.email = profile.email.trim();
-    if (profile.password !== undefined) this.password = profile.password;
+    if (profile.password !== undefined && profile.password.length > 0) {
+      this.password = profile.password;
+    }
     if (profile.phone !== undefined) this.phone = profile.phone.trim();
   }
 
@@ -71,8 +71,6 @@ export class AuthStore {
   }
 
   async signOut() {
-    await AsyncStorage.removeItem('AuthStore');
-
     this.token = null;
     this.status = 'signOut';
     this.isFirstTime = true;

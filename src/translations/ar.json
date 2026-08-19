@@ -3,6 +3,7 @@
     "arabic": "عربي",
     "english": "إنجليزي",
     "language": "لغة",
+    "restart_required": "أعد تشغيل التطبيق لتحديث اتجاه التخطيط.",
     "theme": {
       "dark": "مظلم",
       "light": "خفيفة",
@@ -40,6 +41,7 @@
     "delete": "حذف",
     "delete_confirm": "حذف هذه المعاملة؟",
     "delete_category_confirm": "حذف \"{{name}}\"؟",
+    "delete_category_in_use": "حذف \"{{name}}\"؟ لا تزال {{count}} معاملة تستخدمها.",
     "category_exists": "\"{{name}}\" موجودة بالفعل.",
     "categories": "الفئات",
     "new_category": "اسم فئة جديدة",
@@ -84,7 +86,9 @@
     "security_title": "الأمان",
     "security_body": "هذا تطبيق تجريبي. تبقى بياناتك على هذا الجهاز ولا تُرسل إلى خادم.",
     "password": "كلمة المرور",
+    "password_unchanged": "اتركه فارغاً للإبقاء على الحالي",
     "phone_placeholder": "رقم الهاتف",
+    "empty": "—",
     "no_phone": "—",
     "no_name": "زائر"
   }

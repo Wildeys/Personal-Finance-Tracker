@@ -15,7 +15,6 @@ export default function Login() {
   const { signIn, setIsFirstTime } = useAuth();
 
   const onSubmit: LoginFormProps['onSubmit'] = async (data) => {
-    console.log(data);
     await setIsFirstTime(false);
     await signIn(
       { access: 'access-token', refresh: 'refresh-token' },

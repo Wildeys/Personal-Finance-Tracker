@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { observer } from 'mobx-react-lite';
 import React from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -14,28 +15,33 @@ import {
   View,
 } from '@/components/ui';
 import { translate } from '@/lib';
+import { useStores } from '@/stores';
 
-const schema = z.object({
-  name: z.string().optional(),
-  email: z
-    .string({ message: translate('finance.validation.email_required') })
-    .min(1, translate('finance.validation.email_required'))
-    .email(translate('finance.validation.email_invalid')),
-  password: z
-    .string({ message: translate('finance.validation.password_required') })
-    .min(1, translate('finance.validation.password_required'))
-    .min(6, translate('finance.validation.password_short')),
-});
+const makeSchema = () =>
+  z.object({
+    name: z.string().optional(),
+    email: z
+      .string({ error: translate('finance.validation.email_required') })
+      .min(1, translate('finance.validation.email_required'))
+      .pipe(z.email(translate('finance.validation.email_invalid'))),
+    password: z
+      .string({ error: translate('finance.validation.password_required') })
+      .min(1, translate('finance.validation.password_required'))
+      .min(6, translate('finance.validation.password_short')),
+  });
 
-export type FormType = z.infer<typeof schema>;
+export type FormType = z.infer<ReturnType<typeof makeSchema>>;
 
 export type LoginFormProps = {
   onSubmit?: SubmitHandler<FormType>;
 };
 
-export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
+export const LoginForm = observer(({ onSubmit = () => {} }: LoginFormProps) => {
+  const { uiLanguage } = useStores();
+  const schema = React.useMemo(() => makeSchema(), [uiLanguage.language]);
   const { handleSubmit, control } = useForm<FormType>({
     resolver: zodResolver(schema),
+    defaultValues: { name: '', email: '', password: '' },
   });
 
   return (
@@ -94,4 +100,4 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-};
+});

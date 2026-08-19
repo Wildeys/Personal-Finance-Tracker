@@ -35,12 +35,7 @@ export default function Onboarding() {
         Track your income, expenses and savings{'\n'}all in one place.
       </Text>
 
-      {/* Pagination dots */}
-      <View className="mt-8 flex-row items-center justify-center gap-4">
-        <View className="size-3 rounded-full bg-[#209447]" />
-        <View className="size-3 rounded-full bg-gray-300 dark:bg-neutral-600" />
-        <View className="size-3 rounded-full bg-gray-300 dark:bg-neutral-600" />
-      </View>
+
 
       {/* Get Started */}
       <View className="mt-8">

@@ -3,6 +3,7 @@
     "arabic": "Arabic",
     "english": "English",
     "language": "Language",
+    "restart_required": "Restart the app for the layout direction to update.",
     "theme": {
       "dark": "Dark",
       "light": "Light",
@@ -40,6 +41,7 @@
     "delete": "Delete",
     "delete_confirm": "Delete this transaction?",
     "delete_category_confirm": "Delete \"{{name}}\"?",
+    "delete_category_in_use": "Delete \"{{name}}\"? {{count}} transaction(s) still use it.",
     "category_exists": "\"{{name}}\" already exists.",
     "categories": "Categories",
     "new_category": "New category name",
@@ -84,7 +86,9 @@
     "security_title": "Security",
     "security_body": "This is a demo app. Your data stays on this device and is not sent to a server.",
     "password": "Password",
+    "password_unchanged": "Leave blank to keep unchanged",
     "phone_placeholder": "Phone number",
+    "empty": "—",
     "no_phone": "—",
     "no_name": "Guest"
   }

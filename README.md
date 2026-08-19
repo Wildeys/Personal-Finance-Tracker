@@ -12,8 +12,8 @@ Built on Expo Router, MobX, NativeWind, React Hook Form, and Zod.
 - **Transaction list** — recent activity with delete
 - **Categories** — add and remove categories in Settings
 - **Persistence** — MobX + AsyncStorage (data survives reload)
-- **Theme & language** — light/dark and English/Arabic
-- **Demo login** — any email and password (6+ characters)
+- **Theme & language** — light/dark and English/Arabic. Switching to Arabic asks for an app restart so layout direction can update.
+- **Demo login** — any email and password (6+ characters). The password is not saved on the device.
 
 ## Screenshots
 

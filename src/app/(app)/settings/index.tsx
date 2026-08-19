@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { Alert, type ScrollView as RNScrollView } from 'react-native';
+import { type ScrollView as RNScrollView } from 'react-native';
 
 import { CurrencyItem } from '@/components/settings/currency-item';
 import { LanguageItem } from '@/components/settings/language-item';
@@ -17,7 +17,7 @@ import {
 import { GridIcon, Trash } from '@/components/ui/icons';
 import { translate } from '@/lib';
 import { useStores } from '@/stores';
-import { FINANCE_GREEN, FINANCE_RED, getCategoryColor } from '@/utils';
+import { FINANCE_GREEN, FINANCE_RED, confirm, getCategoryColor, notify } from '@/utils';
 
 export default observer(function Settings() {
   const { finance } = useStores();
@@ -37,39 +37,34 @@ export default observer(function Settings() {
       return;
     }
 
-    Alert.alert(
+    notify(
       translate('finance.categories'),
       translate('finance.category_exists', { name: trimmed })
     );
   };
 
   const onDeleteCategory = (name: string) => {
-    Alert.alert(
+    const count = finance.transactions.filter((t) => t.category === name).length;
+    const message =
+      count > 0
+        ? translate('finance.delete_category_in_use', { name, count })
+        : translate('finance.delete_category_confirm', { name });
+    confirm(
       translate('finance.delete'),
-      translate('finance.delete_category_confirm', { name }),
-      [
-        { text: translate('finance.cancel'), style: 'cancel' },
-        {
-          text: translate('finance.delete'),
-          style: 'destructive',
-          onPress: () => finance.removeCategory(name),
-        },
-      ]
+      message,
+      () => finance.removeCategory(name),
+      translate('finance.delete'),
+      translate('finance.cancel')
     );
   };
 
   const onClear = () => {
-    Alert.alert(
+    confirm(
       translate('finance.clear_all'),
       translate('finance.clear_confirm'),
-      [
-        { text: translate('finance.cancel'), style: 'cancel' },
-        {
-          text: translate('finance.delete'),
-          style: 'destructive',
-          onPress: () => finance.clearTransactions(),
-        },
-      ]
+      () => finance.clearTransactions(),
+      translate('finance.delete'),
+      translate('finance.cancel')
     );
   };
 

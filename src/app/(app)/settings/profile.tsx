@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { Alert, type TextInput as RNTextInput } from 'react-native';
+import { type TextInput as RNTextInput } from 'react-native';
 
 import { CurrencyItem } from '@/components/settings/currency-item';
 import { UserAvatar } from '@/components/user-avatar';
@@ -26,14 +26,13 @@ import {
 } from '@/components/ui/icons';
 import { translate } from '@/lib';
 import { useAuth } from '@/providers/auth-provider';
-import { FINANCE_GREEN, FINANCE_RED, formatTransactionDate } from '@/utils';
+import { FINANCE_GREEN, FINANCE_RED, formatTransactionDate, notify } from '@/utils';
 
 export default observer(function Profile() {
   const router = useRouter();
   const {
     name,
     email,
-    password,
     phone,
     memberSince,
     updateProfile,
@@ -43,7 +42,7 @@ export default observer(function Profile() {
   const [draft, setDraft] = React.useState({
     name,
     email,
-    password,
+    password: '',
     phone,
   });
   const passwordRef = React.useRef<RNTextInput>(null);
@@ -51,7 +50,7 @@ export default observer(function Profile() {
   const displayName = name.trim() || translate('profile.no_name');
 
   const startEditing = (focusPassword = false) => {
-    setDraft({ name, email, password, phone });
+    setDraft({ name, email, password: '', phone });
     setEditing(true);
     if (focusPassword) {
       requestAnimationFrame(() => passwordRef.current?.focus());
@@ -60,7 +59,12 @@ export default observer(function Profile() {
 
   const onHeaderAction = () => {
     if (editing) {
-      updateProfile(draft);
+      const { password: nextPassword, ...rest } = draft;
+      updateProfile(
+        nextPassword.trim()
+          ? { ...rest, password: nextPassword }
+          : rest
+      );
       setEditing(false);
       return;
     }
@@ -70,7 +74,7 @@ export default observer(function Profile() {
   const onChangePassword = () => startEditing(true);
 
   const onSecurity = () => {
-    Alert.alert(
+    notify(
       translate('profile.security_title'),
       translate('profile.security_body')
     );
@@ -131,6 +135,7 @@ export default observer(function Profile() {
               label={translate('profile.password')}
               value={draft.password}
               secureTextEntry
+              placeholder={translate('profile.password_unchanged')}
               onChangeText={(value) =>
                 setDraft((prev) => ({ ...prev, password: value }))
               }
@@ -157,7 +162,7 @@ export default observer(function Profile() {
               <InfoRow
                 icon={<MailIcon />}
                 label={translate('profile.email')}
-                value={email || translate('profile.no_phone')}
+                value={email || translate('profile.empty')}
               />
               <InfoRow
                 icon={<PhoneIcon />}
@@ -170,7 +175,7 @@ export default observer(function Profile() {
                 value={
                   memberSince
                     ? formatTransactionDate(memberSince)
-                    : translate('profile.no_phone')
+                    : translate('profile.empty')
                 }
               />
             </View>
