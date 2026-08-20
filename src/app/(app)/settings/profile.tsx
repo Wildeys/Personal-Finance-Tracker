@@ -24,7 +24,7 @@ import {
   SignOutIcon,
   UserIcon,
 } from '@/components/ui/icons';
-import { translate } from '@/lib';
+import { translate, useKeyboardHeight } from '@/lib';
 import { useAuth } from '@/providers/auth-provider';
 import { FINANCE_GREEN, FINANCE_RED, formatTransactionDate, notify } from '@/utils';
 
@@ -46,6 +46,7 @@ export default observer(function Profile() {
     phone,
   });
   const passwordRef = React.useRef<RNTextInput>(null);
+  const keyboardHeight = useKeyboardHeight();
 
   const displayName = name.trim() || translate('profile.no_name');
 
@@ -86,7 +87,8 @@ export default observer(function Profile() {
       <ScrollView
         className="flex-1"
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ paddingBottom: 40 }}
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={{ paddingBottom: 40 + keyboardHeight }}
       >
         <View className="flex-row items-center px-5 pt-14">
           <Pressable

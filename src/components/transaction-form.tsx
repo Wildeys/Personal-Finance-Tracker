@@ -1,4 +1,3 @@
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useFocusEffect } from 'expo-router';
 import { observer } from 'mobx-react-lite';
@@ -6,12 +5,11 @@ import { useColorScheme } from 'nativewind';
 import React from 'react';
 import type { Control } from 'react-hook-form';
 import { Controller, useForm, useWatch } from 'react-hook-form';
-import { Platform } from 'react-native';
+import { Keyboard, type ScrollView as RNScrollView } from 'react-native';
 import * as z from 'zod';
 
 import {
   Button,
-  KeyboardAvoidingView,
   Pressable,
   ScrollView,
   Text,
@@ -20,7 +18,7 @@ import {
   colors,
 } from '@/components/ui';
 import { ArrowDown, ArrowUp, CategoryGlyph, hasCategoryIcon } from '@/components/ui/icons';
-import { translate } from '@/lib';
+import { translate, useKeyboardHeight } from '@/lib';
 import { useStores } from '@/stores';
 import { FINANCE_GREEN, FINANCE_RED, getCategoryColor } from '@/utils';
 
@@ -59,7 +57,8 @@ type Props = {
 export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
   const { finance, uiLanguage } = useStores();
   const { colorScheme } = useColorScheme();
-  const tabBarHeight = React.useContext(BottomTabBarHeightContext) ?? 0;
+  const scrollRef = React.useRef<RNScrollView>(null);
+  const keyboardHeight = useKeyboardHeight();
   const [amountFocused, setAmountFocused] = React.useState(false);
   const schema = React.useMemo(
     () => makeSchema(),
@@ -76,6 +75,7 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
   }, [reset]);
 
   const submit = handleSubmit((data) => {
+    Keyboard.dismiss();
     onSubmit(data);
     clearForm();
   });
@@ -93,17 +93,13 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
   const currencyPrefix = finance.currency === 'MVR' ? 'Rf' : '$';
 
   return (
-    <KeyboardAvoidingView
+    <ScrollView
+      ref={scrollRef}
       className="flex-1 bg-white dark:bg-neutral-900"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={tabBarHeight}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      contentContainerStyle={{ paddingBottom: 48 + keyboardHeight }}
     >
-      <ScrollView
-        className="flex-1 bg-white dark:bg-neutral-900"
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-        contentContainerStyle={{ paddingBottom: 48 }}
-      >
         <Text className="mb-1 text-base font-semibold">
           {translate('finance.amount')}
         </Text>
@@ -172,6 +168,9 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
                   value={value}
                   onChangeText={(text) => onChange(text.slice(0, NOTE_MAX))}
                   onBlur={onBlur}
+                  onFocus={() => {
+                    setTimeout(() => scrollRef.current?.scrollToEnd({ animated: true }), 100);
+                  }}
                   placeholder={translate('finance.add_note')}
                   placeholderTextColor={
                     colorScheme === 'dark'
@@ -210,7 +209,6 @@ export const TransactionForm = observer(({ onSubmit, onCancel }: Props) => {
           </Text>
         </Pressable>
       </ScrollView>
-    </KeyboardAvoidingView>
   );
 });
 

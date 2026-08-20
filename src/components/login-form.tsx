@@ -3,18 +3,16 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
-import { Platform } from 'react-native';
 import * as z from 'zod';
 
 import {
   Button,
   ControlledInput,
-  KeyboardAvoidingView,
   ScrollView,
   Text,
   View,
 } from '@/components/ui';
-import { translate } from '@/lib';
+import { translate, useKeyboardHeight } from '@/lib';
 import { useStores } from '@/stores';
 
 const makeSchema = () =>
@@ -38,6 +36,7 @@ export type LoginFormProps = {
 
 export const LoginForm = observer(({ onSubmit = () => {} }: LoginFormProps) => {
   const { uiLanguage } = useStores();
+  const keyboardHeight = useKeyboardHeight();
   const schema = React.useMemo(() => makeSchema(), [uiLanguage.language]);
   const { handleSubmit, control } = useForm<FormType>({
     resolver: zodResolver(schema),
@@ -45,17 +44,16 @@ export const LoginForm = observer(({ onSubmit = () => {} }: LoginFormProps) => {
   });
 
   return (
-    <KeyboardAvoidingView
+    <ScrollView
       className="flex-1"
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={10}
+      keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="on-drag"
+      contentContainerStyle={{
+        flexGrow: 1,
+        justifyContent: 'center',
+        paddingBottom: keyboardHeight,
+      }}
     >
-      <ScrollView
-        className="flex-1"
-        keyboardShouldPersistTaps="handled"
-        automaticallyAdjustKeyboardInsets
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-      >
         <View className="p-4">
           <View className="items-center justify-center">
             <Text
@@ -98,6 +96,5 @@ export const LoginForm = observer(({ onSubmit = () => {} }: LoginFormProps) => {
           />
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
   );
 });
