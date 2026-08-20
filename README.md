@@ -47,9 +47,7 @@ Use **Yarn only** in this project (do not mix with npm).
 
 | Home | Add Transaction | Settings | Transactions |
 | --- | --- | --- | --- |
-| ![Home](docs/screenshots/home.png) | ![Add Transaction](docs/screenshots/
-add-transaction.png) | ![Settings](docs/screenshots/settings.png) | !
-[Transactions](docs/screenshots/transactions.png) |
+| ![Home](docs/screenshots/home.png) | ![Add Transaction](docs/screenshots/add-transaction.png) | ![Settings](docs/screenshots/settings.png) | ![Transactions](docs/screenshots/transactions.png) |
 
 ## Technologies used
 
