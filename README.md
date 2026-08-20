@@ -47,11 +47,9 @@ Use **Yarn only** in this project (do not mix with npm).
 
 | Home | Add Transaction | Settings | Navigation |
 | ---- | --------------- | -------- | ---------- |
-| Home | Add Transaction | Settings | Navigation |
-
-
-Put device captures in `docs/screenshots/` as `home.png`, `add-transaction.png`, `settings.png`, and `navigation.png` (tab bar).
-
+| ![Home](docs/screenshots/home.png) | ![Add Transaction](docs/screenshots/
+add-transaction.png) | ![Settings](docs/screenshots/settings.png) | !
+[Transactions](docs/screenshots/transactions.png) |
 ## Technologies used
 
 - **Frameworks:** React Native 0.81, Expo SDK 54, Expo Router (file-based tabs)
