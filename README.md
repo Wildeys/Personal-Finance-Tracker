@@ -19,19 +19,20 @@ Data stays on the device via MobX and AsyncStorage. There is no backend. Transac
 
 Expo Router (file-based tabs), MobX, NativeWind (Tailwind CSS), FlashList, React Hook Form, and Zod.
 
+## Requirements
+
+Exact environment and library versions are listed in [requirements.txt](./requirements.txt). Install with Yarn as shown below (this is not a pip file).
+
 ## Screenshots
 
-| Home | Add Transaction | Settings |
-| --- | --- | --- |
-| ![Home](docs/screenshots/home.png) | ![Add Transaction](docs/screenshots/add-transaction.png) | ![Settings](docs/screenshots/settings.png) |
+| Home | Add Transaction | Settings | Transactions |
+| --- | --- | --- | --- |
+| ![Home](docs/screenshots/home.png) | ![Add Transaction](docs/screenshots/add-transaction.png) | ![Settings](docs/screenshots/settings.png) | ![Transactions](docs/screenshots/transactions.png) |
 
-| Transactions |
-| --- |
-| ![Transactions](docs/screenshots/transactions.png) |
 
 ## Getting started
 
-**Requirements:** Node.js LTS, Yarn 1, [Expo Go](https://expo.dev/go) on your phone.
+**Requirements:** Node.js LTS, Yarn 1, [Expo Go](https://expo.dev/go) on your phone. See [requirements.txt](./requirements.txt) for pinned library versions.
 
 ```bash
 cd Personal-Finance-Tracker
